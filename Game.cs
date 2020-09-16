@@ -8,11 +8,6 @@ namespace HelloWorld
     //must fight until one is dead. The game should allow players to upgrade their stats
     //using items. Both players and items should be defined as structs. 
 
-    struct Player
-    {
-        public int health;
-        public int damage;
-    }
 
     struct Item
     {
@@ -31,6 +26,7 @@ namespace HelloWorld
         //Run the game
         public void Run()
         {
+            _player1 = new Player();
             Start();
 
             while(_gameOver == false)
@@ -41,15 +37,18 @@ namespace HelloWorld
             End();
 
         }
-
-        public void InitializePlayers()
+        public Player CreateCharacter()
         {
-            _player1.health = 100;
-            _player1.damage = 5;
+            Console.WriteLine("What do you go by?");
+            string name = Console.ReadLine();
+            Player player = new Player(name, 100,  25);
+            SelectItems(player);
+           return player;
+        }     
+        
 
-            _player2.health = 100;
-            _player2.damage = 5;
-        }
+       
+        
 
         public void InitializeItems()
         {
@@ -80,7 +79,7 @@ namespace HelloWorld
         }
 
         //Equip items to both players in the beginning of the game
-        public void EquipItems()
+        public void SelectItems(Player player)
         {
             //Get input for player one
             char input;
@@ -88,28 +87,16 @@ namespace HelloWorld
             //Equip item based on input value
             if (input == '1')
             {
-                _player1.damage += longSword.statBoost;
+                player.AddItemToInventory(longSword,0);
             }
             else if (input == '2')
             {
-                _player1.damage += dagger.statBoost;
+                player.AddItemToInventory(dagger,0);
             }
             Console.WriteLine("Player 1");
             PrintStats(_player1);
 
-            //Get input for player two
-            GetInput(out input, "Longsword", "Dagger", "Welcome! Player two please choose a weapon.");
-            //Equip item based on input value
-            if (input == '1')
-            {
-                _player2.damage += longSword.statBoost;
-            }
-            else if (input == '2')
-            {
-                _player2.damage += dagger.statBoost;
-            }
-            Console.WriteLine("Player 2");
-            PrintStats(_player2);
+           
         }
 
         public void ClearScreen()
@@ -183,14 +170,13 @@ namespace HelloWorld
         //Performed once when the game begins
         public void Start()
         {
-            InitializePlayers();
             InitializeItems();
         }
 
         //Repeated until the game ends
         public void Update()
         {
-            EquipItems();
+            SelectItems();
             StartBattle();
         }
 
